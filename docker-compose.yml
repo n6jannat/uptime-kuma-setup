@@ -1,0 +1,36 @@
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:2
+    container_name: uptime-kuma
+    restart: unless-stopped
+    ports:
+      # Plain HTTP on port 3001. When using the "https" profile, set
+      # KUMA_BIND=127.0.0.1 in .env so only Caddy can reach it.
+      - "${KUMA_BIND:-0.0.0.0}:${KUMA_PORT:-3001}:3001"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - TZ=${TZ:-UTC}
+
+  # Optional: automatic HTTPS with Let's Encrypt.
+  # Start with: docker compose --profile https up -d
+  caddy:
+    image: caddy:2
+    container_name: uptime-kuma-caddy
+    restart: unless-stopped
+    profiles: ["https"]
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN:-}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - uptime-kuma
+
+volumes:
+  caddy_data:
+  caddy_config:
