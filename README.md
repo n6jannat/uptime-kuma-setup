@@ -27,7 +27,7 @@ Open these ports in your firewall or AWS security group:
 
 ### Step 2: Download this project
 ```bash
-git clone https://github.com/<your-user>/uptime-kuma-setup.git
+git clone https://github.com/n6jannat/uptime-kuma-setup.git
 cd uptime-kuma-setup
 ```
 
